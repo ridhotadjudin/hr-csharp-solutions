@@ -1,0 +1,78 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace Solution
+{
+
+    public class Note
+{
+    public string Name { get; set; }
+    public string State { get; set; }
+}
+
+public class NotesStore
+{
+    private List<Note> notes;
+
+    public NotesStore()
+    {
+        notes = new List<Note>();
+    }
+
+    public void AddNote(string state, string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Name cannot be empty");
+        }
+
+        if (state != "completed" && state != "active" && state != "others")
+        {
+            throw new ArgumentException("Invalid state " + state);
+        }
+
+        notes.Add(new Note { Name = name, State = state });
+    }
+
+    public List<string> GetNotes(string state)
+    {
+        if (state != "completed" && state != "active" && state != "others")
+        {
+            throw new ArgumentException("Invalid state " + state);
+        }
+
+        return notes.Where(note => note.State == state).Select(note => note.Name).ToList();
+    }
+}
+    public class Solution
+    {
+        public static void Main() 
+        {
+            var notesStoreObj = new NotesStore();
+            var n = int.Parse(Console.ReadLine());
+            for (var i = 0; i < n; i++) {
+                var operationInfo = Console.ReadLine().Split(' ');
+                try
+                {
+                    if (operationInfo[0] == "AddNote")
+                        notesStoreObj.AddNote(operationInfo[1], operationInfo.Length == 2 ? "" : operationInfo[2]);
+                    else if (operationInfo[0] == "GetNotes")
+                    {
+                        var result = notesStoreObj.GetNotes(operationInfo[1]);
+                        if (result.Count == 0)
+                            Console.WriteLine("No Notes");
+                        else
+                            Console.WriteLine(string.Join(",", result));
+                    } else {
+                        Console.WriteLine("Invalid Parameter");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+        }
+    }
+}
